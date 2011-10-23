@@ -1,0 +1,20 @@
+Name:               Kleislify
+Version:            0.0.1
+Author:             Dylan Just <dylan@techtangents.com>
+License:            AllRightsReserved
+Copyright:          Dylan Just
+Maintainer:         Dylan Just
+Synopsis:           
+Category:           
+Description:        
+Cabal-version:      >= 1.2
+Build-Type:         Simple
+
+Library
+  Build-Depends:    base < 5 && >= 3
+
+  GHC-Options:      -Wall
+                    -fno-warn-type-defaults
+                    -fno-warn-name-shadowing
+
+  Exposed-Modules:  
