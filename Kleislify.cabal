@@ -4,9 +4,7 @@ Author:             Dylan Just <dylan@techtangents.com>
 License:            AllRightsReserved
 Copyright:          Dylan Just
 Maintainer:         Dylan Just
-Synopsis:           
-Category:           
-Description:        
+Description:        Variants of Control.Arrow functions, specialised to kleislis. Avoids boxing into Kleisli values.
 Cabal-version:      >= 1.2
 Build-Type:         Simple
 
@@ -17,4 +15,4 @@ Library
                     -fno-warn-type-defaults
                     -fno-warn-name-shadowing
 
-  Exposed-Modules:  
+  Exposed-Modules:  Control.Kleislify 
