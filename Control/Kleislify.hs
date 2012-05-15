@@ -7,34 +7,60 @@
 -- Maintainer  :  dylan@techtangents.com
 -- Stability   :  experimental
 -- Portability :  portable
--- 
--- Variants of Control.Arrow functions, specialised to kleislis. 
+--
+-- Precomposition and postcomposition of functors and monads.
+--
+-- Variants of Control.Arrow functions, specialised to kleislis.
 -- Avoids boxing into Kleisli values.
+
 
 module Control.Kleislify where
 
+import Control.Applicative
 import Control.Arrow
 
-infixr 1 ^=>, =>^
-infixr 1 ^<=, <=^
+infixr 1 ^=>, =>^, ^<=, <=^
+infixr 1 ^->, ->^, ^<-, <-^
 
--- | Kleisli precomposition of a monad with a pure function. 
+-- | precomposition of a monad with a pure function.
 --   Equivalent to 'Control.Arrow.^>>'
-(^=>) :: Monad m => (b -> c)  -> (c -> m d) -> b -> m d 
-(^=>) f k = runKleisli $ f ^>> (Kleisli k)
+--   Equivalent to 'flip (.)'
+(^=>) :: Monad m => (b -> c) -> (c -> m d) -> b -> m d
+(^=>) = flip (.)
 
--- | Kleisli postcomposition of a monad with a pure function. 
+-- | precomposition of a functor with a pure function.
+--   Equivalent to 'flip (.)'
+(^->) :: Functor f => (b -> c) -> (c -> f d) -> b -> f d
+(^->) = flip (.)
+
+-- | postcomposition of a monad with a pure function.
 --   Equivalent to 'Control.Arrow.>>^'
 (=>^) :: Monad m => (b -> m c) -> (c -> d) -> b -> m d
-(=>^) k f = runKleisli $ Kleisli k >>^ f
+k =>^ fn = \b -> return . fn =<< k b
 
--- | Kleisli precomposition of a monad with a pure function (right-to-left variant). 
+-- | postcomposition of a functor with a pure function.
+--   Equivalent to 'Control.Arrow.>>^'
+(->^) :: Functor f => (b -> f c) -> (c -> d) -> b -> f d
+k ->^ fn = (fmap fn) . k
+
+-- | precomposition of a monad with a pure function (right-to-left variant).
 --   Equivalent to 'Control.Arrow.<<^'
+--   Equivalent to '.'
 (<=^) :: Monad m => (c -> m d) -> (b -> c) -> (b -> m d)
-(<=^) = flip (^=>)
+(<=^) = (.)
 
--- | Kleisli postcomposition of a monad with a pure function (right-to-left variant).
+-- | precomposition of a functor with a pure function (right-to-left variant).
+--   Equivalent to 'Control.Arrow.<<^'
+--   Equivalent to '.'
+(<-^) :: Functor f => (c -> f d) -> (b -> c) -> (b -> f d)
+(<-^) = (.)
+
+-- | postcomposition of a monad with a pure function (right-to-left variant).
 --   Equivalent to 'Control.Arrow.^<<'
 (^<=) :: Monad m => (c -> d) -> (b -> m c) -> b -> m d
 (^<=) = flip (=>^)
 
+-- | postcomposition of a functor with a pure function (right-to-left variant).
+--   Equivalent to 'Control.Arrow.^<<'
+(^<-) :: Functor f => (c -> d) -> (b -> f c) -> b -> f d
+(^<-) = flip (->^)
