@@ -16,9 +16,6 @@
 
 module Control.Kleislify where
 
-import Control.Applicative
-import Control.Arrow
-
 infixr 1 ^=>, =>^, ^<=, <=^
 infixr 1 ^->, ->^, ^<-, <-^
 
