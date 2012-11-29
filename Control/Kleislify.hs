@@ -16,6 +16,9 @@
 
 module Control.Kleislify where
 
+import Control.Monad.Instances
+import Control.Monad
+
 infixr 1 ^=>, =>^, ^<=, <=^
 infixr 1 ^->, ->^, ^<-, <-^
 
@@ -33,12 +36,12 @@ infixr 1 ^->, ->^, ^<-, <-^
 -- | postcomposition of a monad with a pure function.
 --   Equivalent to 'Control.Arrow.>>^'
 (=>^) :: Monad m => (b -> m c) -> (c -> d) -> b -> m d
-k =>^ fn = \b -> return . fn =<< k b
+(=>^) = flip (^<=)
 
 -- | postcomposition of a functor with a pure function.
 --   Equivalent to 'Control.Arrow.>>^'
 (->^) :: Functor f => (b -> f c) -> (c -> d) -> b -> f d
-k ->^ fn = (fmap fn) . k
+(->^) = flip (^<-)
 
 -- | precomposition of a monad with a pure function (right-to-left variant).
 --   Equivalent to 'Control.Arrow.<<^'
@@ -55,9 +58,9 @@ k ->^ fn = (fmap fn) . k
 -- | postcomposition of a monad with a pure function (right-to-left variant).
 --   Equivalent to 'Control.Arrow.^<<'
 (^<=) :: Monad m => (c -> d) -> (b -> m c) -> b -> m d
-(^<=) = flip (=>^)
+(^<=) = liftM . liftM
 
 -- | postcomposition of a functor with a pure function (right-to-left variant).
 --   Equivalent to 'Control.Arrow.^<<'
 (^<-) :: Functor f => (c -> d) -> (b -> f c) -> b -> f d
-(^<-) = flip (->^)
+(^<-) = fmap . fmap
